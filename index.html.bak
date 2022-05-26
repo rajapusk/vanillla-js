@@ -124,7 +124,6 @@
 						divContent.appendChild(createTitle(rowData.headline));
 						divContent.appendChild(createContent(rowData.standfirst));
 						divContent.setAttribute('style', 'width: calc(100% - ' + rowData.thumbnail.width + 'px)');
-						divContent.setAttribute('class', 'scContentBox');
 						
 						divTag.appendChild(divContent);						
 						divTag.appendChild(createThumbnail(rowData.thumbnail));						
