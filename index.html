@@ -1,0 +1,144 @@
+<html>
+	<head>
+		<style>
+			html,body{
+				font-size: 18px;
+				max-width: 1200px;
+				margin: auto;
+				background: #f8f8f8;
+				font-family: ui-monospace;
+			}
+			
+			.scParentDiv{
+				background: #ffffff; 
+				width: 100%; 
+				height: 100%
+			}
+			
+			.scCenterXY{
+				display: flex;
+				align-items: flex-start;
+				justify-content: flex-start;
+			}
+			
+			.scRowItem{
+				width: 100%;
+				margin: 0px 15px;
+				padding: 10px 0px;
+				border-bottom: 1px solid #e0e1e2;
+			}
+						
+			.scCategory{
+				color: #0059bf;
+				padding: 10px 0px;
+			}
+			
+			.scTitle{
+				color: #000000;
+				font-size: 31px;
+			}
+			
+			.scContent{
+				color: #606669;
+				padding: 10px 0px;
+			}
+			
+			.scThumbnail{
+				background: red;
+			}
+			
+			a{
+				text-decoration: none;
+				color: #606669;
+			}
+		</style>
+		<script>
+			function getJSON(url, callback) {
+				var xmlhttp = new XMLHttpRequest();
+				xmlhttp.onreadystatechange = function() {
+					if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+						try {
+							var data = JSON.parse(xmlhttp.responseText);
+						} catch(err) {
+							return;
+						}
+						callback(data);
+					}
+				};
+			 
+				xmlhttp.open("GET", url, true);
+				xmlhttp.send();
+			}
+			
+			var createCategory = function(sCategory){
+				var div = document.createElement('div');
+				var textTag = document.createTextNode(sCategory);
+				div.appendChild(textTag);
+				div.setAttribute('class', 'scCategory');
+				return div;
+			}
+			
+			var createTitle = function(sTitle){
+				var div = document.createElement('div');
+				var textTag = document.createTextNode(sTitle);
+				div.appendChild(textTag);
+				div.setAttribute('class', 'scTitle');
+				return div;
+			}
+			
+			var createContent = function(sContent){
+				var div = document.createElement('div');
+				var textTag = document.createTextNode(sContent);
+				div.appendChild(textTag);
+				div.setAttribute('class', 'scContent');
+				return div;
+			}
+			
+			var createThumbnail = function(thumbnailObj){
+				var div = document.createElement('div');
+				var img = document.createElement('img');
+				
+				img.setAttribute('title', thumbnailObj.title);
+				img.setAttribute('src', thumbnailObj.src);
+				div.appendChild(img);
+				div.setAttribute('class', 'scThumbnail');
+				div.setAttribute('style', 'height: ' + thumbnailObj.height + 'px');
+				
+				return div;
+			}
+			
+			var createItem = function(data){
+				var parentDiv = document.getElementById('dvContent');
+				
+				if(data != null && data.articles != null){
+					for(var rowIdx in data.articles){
+						var rowData = data.articles[rowIdx];
+						var aTag = document.createElement('a');
+						var divContent = document.createElement('div');
+						var divTag = document.createElement('div');
+						
+						divContent.appendChild(createCategory(rowData.primarySectionRouteName));
+						divContent.appendChild(createTitle(rowData.headline));
+						divContent.appendChild(createContent(rowData.standfirst));
+						divContent.setAttribute('style', 'width: calc(100% - ' + rowData.thumbnail.width + 'px)');
+						
+						divTag.appendChild(divContent);						
+						divTag.appendChild(createThumbnail(rowData.thumbnail));						
+						divTag.setAttribute('class', 'scRowItem scCenterXY');
+						
+						aTag.setAttribute('title', rowData.primarySectionRouteName);
+						aTag.setAttribute('href', rowData.link);
+						aTag.setAttribute('target', '_Blank');
+						aTag.appendChild(divTag);
+						parentDiv.appendChild(aTag);
+					}
+				}
+			}
+			
+			getJSON('code-test.json', createItem);
+		</script>
+	</head>
+	<body>
+		<div id="dvContent" class="scParentDiv"></div>
+	</body>
+<html>
